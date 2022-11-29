@@ -5,7 +5,7 @@ export interface IComment {
 }
 
 export interface ITrack {
-  id: string;
+  _id: string;
   name: string;
   artist: string;
   text: string;
@@ -20,3 +20,11 @@ export interface TracksSlice {
   pending: boolean;
   error: boolean;
 }
+
+export type ICreateTrack = {
+  name: string;
+  artist: string;
+  text: string;
+  audio: any;
+  picture: any;
+};

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import MainLayout from '../../layouts/MainLayout'
 import TrackList from '../../components/TrackList'
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks'
-import { selectTrack, getTrackList } from '../../store/slices/track'
+import { getTrackList } from '../../store/actions/track'
 const index = () => {
   const dispatch = useAppDispatch()
   const { tracks, pending, error } = useAppSelector(state => state.track)

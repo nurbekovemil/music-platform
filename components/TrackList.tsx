@@ -11,7 +11,8 @@ const TrackList: React.FC<ITrackListProps> = ({ tracks }) => {
     <>
       <ul role="list" className="-my-6 divide-y divide-gray-200">
         {tracks.map((track) => (
-          <TrackItem key={track.id} track={track} />
+
+          <TrackItem key={track._id} track={track} />
         ))}
       </ul>
     </>

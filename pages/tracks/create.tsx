@@ -2,129 +2,98 @@
 import React, { useState } from 'react'
 import FileUpload from '../../components/FileUpload'
 import MainLayout from '../../layouts/MainLayout'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+import { ICreateTrack } from '../../types/track'
+import TextInput from '../../components/TextInput'
+import Textarea from '../../components/Textarea'
+import { useAppDispatch } from '../../hooks/hooks'
+import { createTrack } from '../../store/actions/track'
+
+const IMAGE_SIZE = 327680;
+const AUDIO_SIZE = 10000000;
+const SUPPORTED_PICTURE_FORMATS = [
+  "image/jpg",
+  "image/jpeg",
+  "image/png"
+];
+const SUPPORTED_AUDIO_FORMATS = [
+  "audio/mpeg",
+];
+const createTrackSchema = yup.object({
+  name: yup.string().required('Name is required'),
+  artist: yup.string().required('Artist is required'),
+  text: yup.string().required('Lyrics required'),
+  picture: yup
+    .mixed()
+    .required("A file is required")
+    .test("Check for emptiness", "Picture is required", value => {
+      if (!value.length) return false
+      return value
+    })
+    .test(
+      "fileSize",
+      "File too large",
+      value => value && value[0]?.size <= IMAGE_SIZE
+
+    )
+    .test(
+      "fileFormat",
+      "Unsupported Format",
+      value => value && SUPPORTED_PICTURE_FORMATS.includes(value[0]?.type)
+    ),
+  audio: yup
+    .mixed()
+    .required('You need to select an audio')
+    .test("Check for emptiness", "Audio is required", value => {
+      if (!value.length) return false
+      return value
+    })
+    .test(
+      "fileSize",
+      "File too large",
+      value => value && value[0]?.size <= AUDIO_SIZE
+    )
+    .test(
+      "fileFormat",
+      "Unsupported Format",
+      value => value && SUPPORTED_AUDIO_FORMATS.includes(value[0]?.type)
+    ),
+}).required()
 
 const create = () => {
-  const [picture, setPicture] = useState(null)
-  const [audio, setAudio] = useState(null)
+  const dispatch = useAppDispatch()
 
+  const { register, handleSubmit, formState: { errors } } = useForm<ICreateTrack>({
+    resolver: yupResolver(createTrackSchema)
+  })
+  const createTrackHandler: SubmitHandler<ICreateTrack> = async data => {
+    let formData = new FormData()
+    console.log(data)
+    for (const [key, value] of Object.entries(data)) {
+      if (key == 'audio' || key == 'picture') {
+        formData.append(key, value[0])
+      } else {
+        formData.append(key, value)
+
+      }
+    }
+    await dispatch(createTrack(formData))
+  }
   return (
     <>
       <MainLayout >
         <div className="mt-5 md:col-span-2 md:mt-0">
-          <form action="#" method="POST">
+          <form onSubmit={handleSubmit(createTrackHandler)}>
             <div className="overflow-hidden sm:rounded-md">
               <div className="bg-white py-5">
                 <div className="grid grid-cols-6 gap-6">
-
-                  {/* <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
-                      First name
-                    </label>
-                    <input
-                      type="text"
-                      name="first-name"
-                      id="first-name"
-                      autoComplete="given-name"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
-                      Last name
-                    </label>
-                    <input
-                      type="text"
-                      name="last-name"
-                      id="last-name"
-                      autoComplete="family-name"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-4">
-                    <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
-                      Email address
-                    </label>
-                    <input
-                      type="text"
-                      name="email-address"
-                      id="email-address"
-                      autoComplete="email"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                      Country
-                    </label>
-                    <select
-                      id="country"
-                      name="country"
-                      autoComplete="country-name"
-                      className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                    >
-                      <option>United States</option>
-                      <option>Canada</option>
-                      <option>Mexico</option>
-                    </select>
-                  </div>
-
-                  <div className="col-span-6">
-                    <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
-                      Street address
-                    </label>
-                    <input
-                      type="text"
-                      name="street-address"
-                      id="street-address"
-                      autoComplete="street-address"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div> */}
-
-                  <div className="col-span-6 sm:col-span-6 lg:col-span-3">
-                    <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                      Track name
-                    </label>
-                    <input
-                      type="text"
-                      name="city"
-                      id="city"
-                      autoComplete="address-level2"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-6 lg:col-span-3">
-                    <label htmlFor="region" className="block text-sm font-medium text-gray-700">
-                      Track
-                    </label>
-                    <input
-                      type="text"
-                      name="region"
-                      id="region"
-                      autoComplete="address-level1"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    />
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-6 lg:col-span-6">
-                    <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700">
-                      ZIP / Postal code
-                    </label>
-                    <textarea
-                      id="about"
-                      name="about"
-                      rows={3}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      placeholder="you@example.com"
-                      defaultValue={''}
-                    />
-                  </div>
-                  <FileUpload setFile={setPicture} accept="image/*" title='Select picture' />
-                  <FileUpload setFile={setAudio} accept="audio/*" title='Select audio' />
+                  <TextInput label='Track title' field='name' register={{ ...register('name') }} errors={errors} />
+                  <TextInput label='Track artist' field='artist' register={{ ...register('artist') }} errors={errors} />
+                  <Textarea label='Track text' field='text' register={{ ...register('text') }} errors={errors} />
+                  <FileUpload field='picture' accept="image/*" title='Select image' register={{ ...register('picture') }} errors={errors} />
+                  <FileUpload field='audio' accept="audio/*" title='Select audio' register={{ ...register('audio') }} errors={errors} />
                 </div>
               </div>
               <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">

@@ -13,7 +13,7 @@ const TrackProgress: React.FC<TrackProgressProps> = ({ left, right, onChange, he
       <input
         id="default-range"
         type="range"
-        className={`w-full h-${height} bg-gray-200  rounded-lg appearance-none  cursor-pointer ${height == 2 && 'range-lg'} dark:bg-gray-700`}
+        className={`w-full h-${height} bg-gray-200 accent-indigo-600  rounded-lg appearance-none  cursor-pointer ${height == 2 && 'range-lg'}`}
         min={0}
         max={right}
         value={left}

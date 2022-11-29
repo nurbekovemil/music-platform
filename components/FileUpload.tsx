@@ -2,17 +2,20 @@
 import React, { useRef } from 'react'
 
 interface FileUploadProps {
-  setFile: Function;
+  setFile?: Function;
   accept: string;
-  title: string
+  title: string;
+  register: any;
+  errors: any;
+  field: string
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ setFile, accept, title }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ accept, title, field, register, errors }) => {
 
-  const fileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    setFile(e.target.files[0])
-  }
+  // const fileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (!e.target.files) return;
+  //   setFile(e.target.files[0])
+  // }
   return (
     <>
       <div className="col-span-6 sm:col-span-3 lg:col-span-3">
@@ -21,14 +24,17 @@ const FileUpload: React.FC<FileUploadProps> = ({ setFile, accept, title }) => {
           <div className="space-y-1 text-center">
             <div className="flex text-sm text-gray-600">
               <label
-                htmlFor="file-upload"
+                htmlFor={field}
                 className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
               >
-                <span>Upload</span>
-                <input id="file-upload" onChange={fileHandler} name="file-upload" type="file" className="sr-only" />
+                <input id={field} accept={accept} type="file"  {...register} />
               </label>
+              {
+                errors[field] && <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
+                  {errors[field]?.message}
+                </span>
+              }
             </div>
-            <p className="text-xs text-gray-500">{accept}</p>
           </div>
         </div>
       </div>

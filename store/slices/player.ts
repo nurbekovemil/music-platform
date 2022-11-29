@@ -4,7 +4,7 @@ import { ITrack } from "../../types/track";
 
 const initialState: PlayerSlice = {
   track: null,
-  volume: 0,
+  volume: 30,
   duration: 0,
   currentTime: 0,
   pause: true,
@@ -15,11 +15,9 @@ const playerSlice = createSlice({
   initialState,
   reducers: {
     playTrack: (state) => {
-      console.log("play");
       state.pause = false;
     },
     pauseTrack: (state) => {
-      console.log("play");
       state.pause = true;
     },
     setTrack: (state, { payload }: PayloadAction<ITrack>) => {
