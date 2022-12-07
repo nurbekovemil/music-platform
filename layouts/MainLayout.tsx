@@ -15,8 +15,8 @@ const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {
           router.route != '/' &&
-          <div className="flex items-baseline justify-between py-2 mb-2">
-            <div >
+          <div className="flex items-baseline justify-center py-2 mb-2">
+            {/* <div >
               <button
                 type="button"
                 onClick={() => router.back()}
@@ -25,9 +25,9 @@ const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
                 <ArrowLeftIcon className="mr-5 h-5 w-5 text-gray-500" aria-hidden="true" />
                 Back
               </button>
-            </div>
+            </div> */}
             <Player />
-            <div className="flex-initial w-34">
+            {/* <div className="flex-initial w-34">
               <button
                 type="button"
                 disabled={router.route == '/tracks/create'}
@@ -38,7 +38,7 @@ const MainLayout: React.FC<PropsWithChildren> = ({ children }) => {
                 Upload track
               </button>
 
-            </div>
+            </div> */}
           </div>
         }
         {children}

@@ -1,9 +1,18 @@
 
 import MainLayout from '../layouts/MainLayout'
-
+import { useEffect } from 'react'
+import { useAppDispatch } from '../hooks/hooks'
+import { checkAuth } from '../store/actions/auth'
 import { useRouter } from 'next/router'
 
 export default function Home() {
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      console.log('check auth')
+      dispatch(checkAuth())
+    }
+  }, [])
   const router = useRouter()
   return (
     <>
